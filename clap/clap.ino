@@ -1,7 +1,7 @@
 /*
- * Programme arduino qui permet de faire sonner un dispositif
- * placé sur un porte-clé lorsque l'utilisateur appuie 
- * sur un bouton depuis une application Android
+ * Programme arduino qui permet d'allumer une lampe de chevet
+ * avec une application android développée sous App inventor
+ * 
  */
 #include <FastLED.h>
 #define NUM_LEDS 4
@@ -19,11 +19,14 @@ CRGB leds[NUM_LEDS];
 void setup() {
   // Initialisation de la communication entre arduino et le module HC-05
   Serial.begin(9600);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS); // Initialisation de l'objet Leds
   FastLED.setBrightness(100);
+  
   pinMode(buzzerPin, OUTPUT);     // Definit la broche connecté au buzzer en mode sortie
   pinMode(ledPin, OUTPUT);        // Définit la broche connectée à la led en mode sortie
   pinMode(buttonPin, INPUT_PULLUP);   // Définit le type de péripherie pour le bouton
+  
   digitalWrite(buttonPin, HIGH);
   FastLED.clear();
   drawLedOff();
@@ -40,8 +43,7 @@ void loop() {
     {
       digitalWrite(ledPin, HIGH);
       buzzerAlarm();
-      drawLedOn();
-      
+      drawLedOn(); 
     }
     // Lorsqu'il appuie sur OFF coupe le son et éteint la led
     else if(incomingValue == '0')
@@ -52,8 +54,10 @@ void loop() {
   }
 }
 
+/******************************** Fonctions **************************************/
 
 void drawLedOn() {
+  // Allume le bandeau de Led
   FastLED.clear();
   for (int i=0; i< NUM_LEDS; i++) {
     leds[i].setRGB(255,255,255) ;
@@ -62,6 +66,7 @@ void drawLedOn() {
 }
 
 void drawLedOff() {
+  // Eteint le Bandeau de Led
   FastLED.clear();
   for (int i=0; i< NUM_LEDS; i++) {
     leds[i].setRGB(0,0,0) ;
@@ -70,7 +75,8 @@ void drawLedOff() {
 }
 
 void buzzerAlarm() {
+  // Allume le buzzer pendant 150 ms
   digitalWrite(buzzerPin, HIGH);
-  delay(150);
+  delay(100);
   digitalWrite(buzzerPin, LOW);
 }
